@@ -1,0 +1,233 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf600
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;\csgray\c100000;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 DROP DATABASE IF EXISTS Domisep;\
+\
+CREATE DATABASE IF NOT EXISTS Domisep;\
+USE Domisep;\
+# -----------------------------------------------------------------------------\
+#       TABLE : HOUSES\
+# -----------------------------------------------------------------------------\
+\
+CREATE TABLE IF NOT EXISTS HOUSES\
+ (\
+   HOUSE_ID CHAR(32) NOT NULL  ,\
+   HOUSE_NUMBER CHAR(32) NULL  ,\
+   HOUSE_STREET CHAR(32) NULL  ,\
+   HOUSE_CITY CHAR(32) NULL  ,\
+   HOUSE_SIZE CHAR(32) NULL  ,\
+   HOUSE_ZIPCODE CHAR(32) NULL  ,\
+   HOUSE_NBOFFLOOR CHAR(32) NULL  ,\
+   HOUSE_NBOFROOM CHAR(32) NULL  \
+   , PRIMARY KEY (HOUSE_ID) \
+ ) \
+ comment = "";\
+\
+# -----------------------------------------------------------------------------\
+#       TABLE : LOGS\
+# -----------------------------------------------------------------------------\
+\
+CREATE TABLE IF NOT EXISTS LOGS\
+ (\
+   LOG_ID CHAR(32) NOT NULL  ,\
+   ACURATOR_ID CHAR(32) NOT NULL  ,\
+   SENSOR_ID CHAR(32) NOT NULL  ,\
+   LOG_TIME CHAR(32) NULL  \
+   , PRIMARY KEY (LOG_ID) \
+ ) \
+ comment = "";\
+\
+# -----------------------------------------------------------------------------\
+#       INDEX DE LA TABLE LOGS\
+# -----------------------------------------------------------------------------\
+\
+\
+CREATE  INDEX I_FK_LOGS_ACURATORS\
+     ON LOGS (ACURATOR_ID ASC);\
+\
+CREATE  INDEX I_FK_LOGS_SENSORS\
+     ON LOGS (SENSOR_ID ASC);\
+\
+# -----------------------------------------------------------------------------\
+#       TABLE : ACURATORS\
+# -----------------------------------------------------------------------------\
+\
+CREATE TABLE IF NOT EXISTS ACURATORS\
+ (\
+   ACURATOR_ID CHAR(32) NOT NULL  ,\
+   ROOM_ID CHAR(32) NOT NULL  ,\
+   ACURATOR_NAME CHAR(32) NULL  ,\
+   ACURATOR_TYPE CHAR(32) NULL  ,\
+   ACURATOR_DATA CHAR(32) NULL  ,\
+   ACURATOR_TIME CHAR(32) NULL  \
+   , PRIMARY KEY (ACURATOR_ID) \
+ ) \
+ comment = "";\
+\
+# -----------------------------------------------------------------------------\
+#       INDEX DE LA TABLE ACURATORS\
+# -----------------------------------------------------------------------------\
+\
+\
+CREATE  INDEX I_FK_ACURATORS_ROOMS\
+     ON ACURATORS (ROOM_ID ASC);\
+\
+# -----------------------------------------------------------------------------\
+#       TABLE : SENSORS\
+# -----------------------------------------------------------------------------\
+\
+CREATE TABLE IF NOT EXISTS SENSORS\
+ (\
+   SENSOR_ID CHAR(32) NOT NULL  ,\
+   ROOM_ID CHAR(32) NOT NULL  ,\
+   SENSOR_NAME CHAR(32) NULL  ,\
+   SENSOR_TYPE CHAR(32) NULL  ,\
+   SENSOR_DATA CHAR(32) NULL  ,\
+   SENSOR_TIME CHAR(32) NULL  \
+   , PRIMARY KEY (SENSOR_ID) \
+ ) \
+ comment = "";\
+\
+# -----------------------------------------------------------------------------\
+#       INDEX DE LA TABLE SENSORS\
+# -----------------------------------------------------------------------------\
+\
+\
+CREATE  INDEX I_FK_SENSORS_ROOMS\
+     ON SENSORS (ROOM_ID ASC);\
+\
+# -----------------------------------------------------------------------------\
+#       TABLE : INSTRUCTIONS\
+# -----------------------------------------------------------------------------\
+\
+CREATE TABLE IF NOT EXISTS INSTRUCTIONS\
+ (\
+   INSTRUCTION_ID CHAR(32) NOT NULL  ,\
+   ROOM_ID CHAR(32) NOT NULL  ,\
+   INSTRUCTION_NAME CHAR(32) NULL  ,\
+   INSTRUCTION_TYPE CHAR(32) NULL  ,\
+   INSTRUCTION_DATA CHAR(32) NULL  \
+   , PRIMARY KEY (INSTRUCTION_ID) \
+ ) \
+ comment = "";\
+\
+# -----------------------------------------------------------------------------\
+#       INDEX DE LA TABLE INSTRUCTIONS\
+# -----------------------------------------------------------------------------\
+\
+\
+CREATE  INDEX I_FK_INSTRUCTIONS_ROOMS\
+     ON INSTRUCTIONS (ROOM_ID ASC);\
+\
+# -----------------------------------------------------------------------------\
+#       TABLE : ROOMS\
+# -----------------------------------------------------------------------------\
+\
+CREATE TABLE IF NOT EXISTS ROOMS\
+ (\
+   ROOM_ID CHAR(32) NOT NULL  ,\
+   HOUSE_ID CHAR(32) NOT NULL  ,\
+   ROOM_NAME CHAR(32) NULL  ,\
+   ROOM_FLOOR CHAR(32) NULL  \
+   , PRIMARY KEY (ROOM_ID) \
+ ) \
+ comment = "";\
+\
+# -----------------------------------------------------------------------------\
+#       INDEX DE LA TABLE ROOMS\
+# -----------------------------------------------------------------------------\
+\
+\
+CREATE  INDEX I_FK_ROOMS_HOUSES\
+     ON ROOMS (HOUSE_ID ASC);\
+\
+# -----------------------------------------------------------------------------\
+#       TABLE : USERS\
+# -----------------------------------------------------------------------------\
+\
+CREATE TABLE IF NOT EXISTS USERS\
+ (\
+   USER_ID CHAR(32) NOT NULL  ,\
+   USER_PASSWORD CHAR(32) NULL  ,\
+   USER_LASTNAME CHAR(32) NULL  ,\
+   USER_FIRSTNAME CHAR(32) NULL  ,\
+   USER_PERMISSION CHAR(32) NULL  ,\
+   USER_EMAIL CHAR(32) NULL  ,\
+   USER_PHONENUMBER CHAR(32) NULL  \
+   , PRIMARY KEY (USER_ID) \
+ ) \
+ comment = "";\
+\
+# -----------------------------------------------------------------------------\
+#       TABLE : LIVING\
+# -----------------------------------------------------------------------------\
+\
+CREATE TABLE IF NOT EXISTS LIVING\
+ (\
+   USER_ID CHAR(32) NOT NULL  ,\
+   HOUSE_ID CHAR(32) NOT NULL  \
+   , PRIMARY KEY (USER_ID,HOUSE_ID) \
+ ) \
+ comment = "";\
+\
+# -----------------------------------------------------------------------------\
+#       INDEX DE LA TABLE LIVING\
+# -----------------------------------------------------------------------------\
+\
+\
+CREATE  INDEX I_FK_LIVING_USERS\
+     ON LIVING (USER_ID ASC);\
+\
+CREATE  INDEX I_FK_LIVING_HOUSES\
+     ON LIVING (HOUSE_ID ASC);\
+\
+\
+# -----------------------------------------------------------------------------\
+#       CREATION DES REFERENCES DE TABLE\
+# -----------------------------------------------------------------------------\
+\
+\
+ALTER TABLE LOGS \
+  ADD FOREIGN KEY FK_LOGS_ACURATORS (ACURATOR_ID)\
+      REFERENCES ACURATORS (ACURATOR_ID) ;\
+\
+\
+ALTER TABLE LOGS \
+  ADD FOREIGN KEY FK_LOGS_SENSORS (SENSOR_ID)\
+      REFERENCES SENSORS (SENSOR_ID) ;\
+\
+\
+ALTER TABLE ACURATORS \
+  ADD FOREIGN KEY FK_ACURATORS_ROOMS (ROOM_ID)\
+      REFERENCES ROOMS (ROOM_ID) ;\
+\
+\
+ALTER TABLE SENSORS \
+  ADD FOREIGN KEY FK_SENSORS_ROOMS (ROOM_ID)\
+      REFERENCES ROOMS (ROOM_ID) ;\
+\
+\
+ALTER TABLE INSTRUCTIONS \
+  ADD FOREIGN KEY FK_INSTRUCTIONS_ROOMS (ROOM_ID)\
+      REFERENCES ROOMS (ROOM_ID) ;\
+\
+\
+ALTER TABLE ROOMS \
+  ADD FOREIGN KEY FK_ROOMS_HOUSES (HOUSE_ID)\
+      REFERENCES HOUSES (HOUSE_ID) ;\
+\
+\
+ALTER TABLE LIVING \
+  ADD FOREIGN KEY FK_LIVING_USERS (USER_ID)\
+      REFERENCES USERS (USER_ID) ;\
+\
+\
+ALTER TABLE LIVING \
+  ADD FOREIGN KEY FK_LIVING_HOUSES (HOUSE_ID)\
+      REFERENCES HOUSES (HOUSE_ID) ;\
+\
+}
